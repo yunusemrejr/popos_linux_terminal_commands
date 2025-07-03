@@ -1,1 +1,505 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pop!_OS Terminal Commands Reference</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #48CAE4, #023047);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: #48CAE4;
+            box-shadow: 0 0 15px rgba(72, 202, 228, 0.3);
+        }
+
+        .filter-buttons {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: #e9ecef;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #48CAE4;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .commands-container {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .command-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #48CAE4;
+            transition: all 0.3s ease;
+        }
+
+        .command-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .command-title {
+            font-size: 1.3em;
+            color: #023047;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .command-code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .command-description {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .command-category {
+            display: inline-block;
+            background: #48CAE4;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        .no-results {
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.2em;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .command-code {
+                font-size: 12px;
+            }
+            
+            .filter-buttons {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐧 Pop!_OS Terminal Commands</h1>
+            <p>Essential commands for your Lenovo ThinkPad E14 Gen 5 running Pop!_OS</p>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search commands... (e.g., 'find files', 'system update', 'disk space')">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="all">All Commands</button>
+                <button class="filter-btn" data-category="file-management">File Management</button>
+                <button class="filter-btn" data-category="system-maintenance">System Maintenance</button>
+                <button class="filter-btn" data-category="performance">Performance</button>
+                <button class="filter-btn" data-category="graphics">Graphics</button>
+                <button class="filter-btn" data-category="network">Network</button>
+                <button class="filter-btn" data-category="advanced">Advanced</button>
+            </div>
+        </div>
+
+        <div class="commands-container" id="commandsContainer">
+            <!-- Commands will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const commands = [
+            {
+                title: "Find Non-Empty Text Files by Primary User",
+                code: `find / -type f -name "*.txt" -user $USER -not -empty 2>/dev/null | head -20`,
+                description: "Searches the entire filesystem for .txt files created by the current user that are not empty. Suppresses permission errors and limits output to first 20 results.",
+                category: "file-management",
+                keywords: ["find", "txt", "user", "empty", "files"]
+            },
+            {
+                title: "Advanced File Search with Size and Date",
+                code: `find /home/$USER -type f -name "*.txt" -not -empty -size +1k -newermt "2024-01-01" -exec ls -lh {} + 2>/dev/null`,
+                description: "Finds non-empty text files larger than 1KB created after January 1, 2024, in user's home directory with detailed file information.",
+                category: "file-management",
+                keywords: ["find", "size", "date", "detailed", "search"]
+            },
+            {
+                title: "Refresh UI Without Closing Apps",
+                code: `sudo systemctl restart gdm3`,
+                description: "Restarts the GNOME Display Manager to refresh the UI. Alternative: 'killall -HUP gnome-shell' for GNOME Shell restart only.",
+                category: "system-maintenance",
+                keywords: ["refresh", "ui", "restart", "gnome", "display"]
+            },
+            {
+                title: "Alternative UI Refresh (GNOME Shell Only)",
+                code: `killall -HUP gnome-shell`,
+                description: "Restarts only the GNOME Shell without affecting other applications or logging out.",
+                category: "system-maintenance",
+                keywords: ["refresh", "gnome", "shell", "restart"]
+            },
+            {
+                title: "Find Large Cache and Temp Files",
+                code: `find /tmp /var/tmp ~/.cache ~/.local/share/Trash -type f -size +10M -exec ls -lht {} + 2>/dev/null | head -20`,
+                description: "Locates cache and temporary files larger than 10MB with last access times and sizes, sorted by modification time.",
+                category: "performance",
+                keywords: ["cache", "temp", "large", "files", "cleanup"]
+            },
+            {
+                title: "Detailed System Cache Analysis",
+                code: `du -sh ~/.cache/* /tmp/* /var/tmp/* 2>/dev/null | sort -hr | head -15`,
+                description: "Shows disk usage of cache directories sorted by size, helping identify space-consuming temporary files.",
+                category: "performance",
+                keywords: ["cache", "analysis", "disk", "usage", "temp"]
+            },
+            {
+                title: "Find Old Unused Files for Cleanup",
+                code: `find /home/$USER -type f -atime +30 -size +50M -exec ls -lhu {} + 2>/dev/null | head -10`,
+                description: "Finds files larger than 50MB that haven't been accessed in 30 days, candidates for cleanup.",
+                category: "performance",
+                keywords: ["old", "unused", "cleanup", "large", "files"]
+            },
+            {
+                title: "Complete System Update (Pop!_OS)",
+                code: `sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && flatpak update -y && sudo snap refresh`,
+                description: "Comprehensive system update including APT packages, Flatpaks, and Snaps with automatic cleanup of unused packages.",
+                category: "system-maintenance",
+                keywords: ["update", "upgrade", "system", "apt", "flatpak", "snap"]
+            },
+            {
+                title: "Switch to Integrated Graphics (AMD)",
+                code: `sudo system76-power graphics integrated`,
+                description: "Switches your ThinkPad to use integrated AMD Radeon graphics for better battery life. Requires reboot to take effect.",
+                category: "graphics",
+                keywords: ["graphics", "integrated", "amd", "battery", "power"]
+            },
+            {
+                title: "Switch to Dedicated Graphics",
+                code: `sudo system76-power graphics hybrid`,
+                description: "Enables hybrid graphics mode for better performance when needed. Use 'compute' for maximum performance.",
+                category: "graphics",
+                keywords: ["graphics", "dedicated", "hybrid", "performance"]
+            },
+            {
+                title: "Monitor System Resources",
+                code: `htop -d 10 -C`,
+                description: "Advanced system monitor showing CPU, RAM, and process information with color coding and 1-second updates.",
+                category: "performance",
+                keywords: ["monitor", "resources", "cpu", "ram", "processes"]
+            },
+            {
+                title: "Check SSD Health and Usage",
+                code: `sudo smartctl -a /dev/nvme0n1 | grep -E "(Health|Temperature|Data_Units)"`,
+                description: "Displays SSD health status, temperature, and data usage statistics for your 512GB NVMe drive.",
+                category: "performance",
+                keywords: ["ssd", "health", "nvme", "temperature", "smart"]
+            },
+            {
+                title: "Clean Package Cache and Logs",
+                code: `sudo apt autoclean && sudo apt autoremove && sudo journalctl --vacuum-time=7d`,
+                description: "Cleans APT package cache, removes unused packages, and keeps only 7 days of system logs to free up space.",
+                category: "system-maintenance",
+                keywords: ["clean", "cache", "logs", "space", "maintenance"]
+            },
+            {
+                title: "Find Duplicate Files",
+                code: `fdupes -r /home/$USER | head -20`,
+                description: "Finds duplicate files in your home directory. Install with 'sudo apt install fdupes' if not available.",
+                category: "file-management",
+                keywords: ["duplicate", "files", "fdupes", "cleanup"]
+            },
+            {
+                title: "Network Speed Test",
+                code: `curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3`,
+                description: "Tests internet connection speed using speedtest-cli. Alternative: install with 'sudo apt install speedtest-cli'.",
+                category: "network",
+                keywords: ["network", "speed", "test", "internet", "bandwidth"]
+            },
+            {
+                title: "Check Memory Usage by Process",
+                code: `ps aux --sort=-%mem | head -15`,
+                description: "Shows top 15 processes consuming the most RAM, useful for identifying memory-hungry applications.",
+                category: "performance",
+                keywords: ["memory", "ram", "processes", "usage", "top"]
+            },
+            {
+                title: "Find Recently Modified Files",
+                code: `find /home/$USER -type f -mtime -7 -exec ls -lt {} + 2>/dev/null | head -20`,
+                description: "Lists files modified in the last 7 days with timestamps, sorted by modification time.",
+                category: "file-management",
+                keywords: ["recent", "modified", "files", "timestamp", "find"]
+            },
+            {
+                title: "Check Disk Usage by Directory",
+                code: `du -h --max-depth=1 /home/$USER | sort -hr`,
+                description: "Shows disk usage of directories in your home folder, sorted by size from largest to smallest.",
+                category: "performance",
+                keywords: ["disk", "usage", "directory", "space", "size"]
+            },
+            {
+                title: "Monitor CPU Temperature",
+                code: `watch -n 2 'sensors | grep -E "(Core|temp)"'`,
+                description: "Continuously monitors CPU temperature every 2 seconds. Install lm-sensors with 'sudo apt install lm-sensors'.",
+                category: "performance",
+                keywords: ["cpu", "temperature", "sensors", "monitor", "thermal"]
+            },
+            {
+                title: "List All Installed Packages",
+                code: `dpkg --get-selections | grep -v deinstall | wc -l && echo "Total packages installed"`,
+                description: "Counts and displays the total number of installed packages on your Pop!_OS system.",
+                category: "system-maintenance",
+                keywords: ["packages", "installed", "dpkg", "count", "system"]
+            },
+            {
+                title: "Find Large Directories",
+                code: `du -h /home/$USER | sort -hr | head -15`,
+                description: "Identifies the 15 largest directories in your home folder to help with disk space management.",
+                category: "performance",
+                keywords: ["large", "directories", "disk", "space", "cleanup"]
+            },
+            {
+                title: "Check System Uptime and Load",
+                code: `uptime && cat /proc/loadavg`,
+                description: "Shows system uptime, current users, and system load averages for performance monitoring.",
+                category: "performance",
+                keywords: ["uptime", "load", "system", "performance", "monitoring"]
+            },
+            {
+                title: "List USB Devices",
+                code: `lsusb -v | grep -E "(Bus|Device|iProduct)" | head -20`,
+                description: "Lists connected USB devices with detailed information, useful for troubleshooting hardware.",
+                category: "advanced",
+                keywords: ["usb", "devices", "hardware", "lsusb", "connected"]
+            },
+            {
+                title: "Check Battery Status",
+                code: `upower -i /org/freedesktop/UPower/devices/battery_BAT0`,
+                description: "Displays detailed battery information including charge level, health, and power consumption.",
+                category: "performance",
+                keywords: ["battery", "power", "charge", "health", "laptop"]
+            },
+            {
+                title: "Find Files by Extension and Size",
+                code: `find /home/$USER -name "*.pdf" -size +5M -exec ls -lh {} + 2>/dev/null`,
+                description: "Finds PDF files larger than 5MB in your home directory with detailed file information.",
+                category: "file-management",
+                keywords: ["pdf", "size", "extension", "find", "large"]
+            },
+            {
+                title: "System Information Summary",
+                code: `neofetch`,
+                description: "Displays a comprehensive system information summary including OS, kernel, CPU, GPU, and memory details.",
+                category: "advanced",
+                keywords: ["system", "info", "neofetch", "summary", "hardware"]
+            },
+            {
+                title: "Check WiFi Connection Details",
+                code: `nmcli dev wifi show-password`,
+                description: "Shows current WiFi connection details including password (if saved) and connection strength.",
+                category: "network",
+                keywords: ["wifi", "connection", "password", "network", "details"]
+            },
+            {
+                title: "Monitor Network Traffic",
+                code: `nethogs -d 3`,
+                description: "Monitors network traffic by process, updating every 3 seconds. Install with 'sudo apt install nethogs'.",
+                category: "network",
+                keywords: ["network", "traffic", "monitor", "bandwidth", "process"]
+            },
+            {
+                title: "Clean Thumbnail Cache",
+                code: `rm -rf ~/.cache/thumbnails/* && echo "Thumbnail cache cleared"`,
+                description: "Removes all cached thumbnails to free up space. Thumbnails will be regenerated as needed.",
+                category: "system-maintenance",
+                keywords: ["thumbnail", "cache", "clean", "space", "clear"]
+            },
+            {
+                title: "Find Broken Symlinks",
+                code: `find /home/$USER -type l -exec test ! -e {} \\; -print 2>/dev/null`,
+                description: "Finds broken symbolic links in your home directory that point to non-existent files.",
+                category: "file-management",
+                keywords: ["symlinks", "broken", "links", "find", "cleanup"]
+            }
+        ];
+
+        let filteredCommands = commands;
+
+        function renderCommands(commandsToRender) {
+            const container = document.getElementById('commandsContainer');
+            
+            if (commandsToRender.length === 0) {
+                container.innerHTML = '<div class="no-results">No commands found matching your search.</div>';
+                return;
+            }
+
+            container.innerHTML = commandsToRender.map(cmd => `
+                <div class="command-card" data-category="${cmd.category}">
+                    <div class="command-title">${cmd.title}</div>
+                    <div class="command-category">${cmd.category.replace('-', ' ').toUpperCase()}</div>
+                    <div class="command-code">${cmd.code}</div>
+                    <div class="command-description">${cmd.description}</div>
+                    <button class="copy-btn" onclick="copyToClipboard('${cmd.code.replace(/'/g, "\\'")}')">📋 Copy Command</button>
+                </div>
+            `).join('');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                event.target.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    event.target.textContent = '📋 Copy Command';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        function filterCommands() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const activeCategory = document.querySelector('.filter-btn.active').dataset.category;
+            
+            filteredCommands = commands.filter(cmd => {
+                const matchesSearch = cmd.title.toLowerCase().includes(searchTerm) ||
+                                    cmd.description.toLowerCase().includes(searchTerm) ||
+                                    cmd.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm)) ||
+                                    cmd.code.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = activeCategory === 'all' || cmd.category === activeCategory;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            renderCommands(filteredCommands);
+        }
+
+        // Event listeners
+        document.getElementById('searchBox').addEventListener('input', filterCommands);
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterCommands();
+            });
+        });
+
+        // Initial render
+        renderCommands(commands);
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('searchBox').focus();
+            }
+        });
+    </script>
+</body>
+</html>
